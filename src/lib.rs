@@ -117,13 +117,15 @@ impl WebAssemblyEngineProvider for WasmtimeEngineProvider {
 
     fn call(&mut self, op_length: i32, msg_length: i32) -> Result<i32, Box<dyn Error>> {
         let engine_inner = self.inner.as_ref().unwrap();
-        let call = engine_inner
-            .guest_call_fn
-            .call(&mut self.store, &[op_length.into(), msg_length.into()]);
-
+        let mut results = [wasmtime::Val::I32(0); 1];
+        let call = engine_inner.guest_call_fn.call(
+            &mut self.store,
+            &[op_length.into(), msg_length.into()],
+            &mut results,
+        );
         match call {
-            Ok(result) => {
-                let result: i32 = result[0].i32().unwrap();
+            Ok(()) => {
+                let result: i32 = results[0].i32().unwrap();
                 Ok(result)
             }
             Err(e) => {
@@ -165,7 +167,9 @@ impl WasmtimeEngineProvider {
                 .unwrap()
                 .get_export(&mut self.store, starter)
             {
-                ext.into_func().unwrap().call(&mut self.store, &[])?;
+                ext.into_func()
+                    .unwrap()
+                    .call(&mut self.store, &[], &mut [])?;
             }
         }
         Ok(())
