@@ -1,3 +1,16 @@
+----
+
+----
+
+ # This repository has moved
+ 
+ Please update your links to the [wapc/wapc-rs](https://github.com/wapc/wapc-rs) repository.
+ 
+----
+
+----
+
+
 # Wasmtime Engine Provider
 
 This is a pluggable engine provider for the [waPC](https://github.com/wapc) RPC exchange protocol. This engine encapsulates 
